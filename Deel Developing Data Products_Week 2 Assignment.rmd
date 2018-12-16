@@ -1,0 +1,53 @@
+---
+title: "Deel Developing Data Products_Week 2 Assignment"
+author: "Jakob Deel"
+date: "December 9, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  fig.path = "figures/"
+  )
+
+setwd("C:/Users/jdeel/Documents/Training/JHU - Coursera/Developing Data Products")
+
+```
+
+## R Packages
+
+The following code installs and loads needed packages
+
+```{r packages}
+#loads needed packages
+library(dplyr)
+library(leaflet)
+```
+
+## Map
+
+The following code creates a map, using openly-available address information from openaddresses.io (Required attribution: Yes us/va/city_of_williamsburg).
+
+```{r title, echo = FALSE}
+
+paste("This map shows the location of addresses in the City of Williamsburg, VA, as of","December 9th, 2018",sep = " ")
+```
+
+```{r map}
+#reads in address data obtained from openaddresses.io
+addresses <- read.csv("city_of_williamsburg.csv")
+
+#renames columns in address data as needed, and drops unnecessary columns
+addresses$lng <- addresses$LON
+addresses$lat <- addresses$LAT
+addresses <- addresses[,c("lng","lat")]
+
+#creates map
+map <- leaflet () %>%
+  addTiles()
+
+addMarkers(map = map, data = addresses)
+```
+
+

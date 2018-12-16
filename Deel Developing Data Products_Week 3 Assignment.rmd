@@ -1,0 +1,51 @@
+---
+title: "Deel Developing Data Products_Week 4 Assignment"
+author: "Jakob Deel"
+date: "December 16, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  fig.path = "figures/"
+  )
+
+setwd("C:/Users/jdeel/Documents/Training/JHU - Coursera/Developing Data Products")
+
+```
+
+## R Packages
+
+The following code installs and loads needed packages
+
+```{r packages}
+#loads needed packages
+library(dplyr)
+library(leaflet)
+library(plotly)
+```
+
+## Map
+
+The following code creates a plot, using openly-available income information from the U.S. Census' 2013-2017 American Community Survey 5-year estimates (https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ACS_17_5YR_S2503&prodType=table).
+
+```{r title, echo = FALSE}
+
+paste("This plot shows median locality income and housing costs for all localities in Virginia","December 16th, 2018",sep = " ")
+```
+
+```{r map}
+#reads in address data obtained from openaddresses.io
+dat <- read.csv("JD_ACS_17_5YR_S2503_with_ann.csv")
+
+#creates simple linear regression for trendline
+m1 <- lm(dat$housingmedian~dat$medianincome)
+
+#creates plot
+plot <- plot_ly(data = dat, x = dat$medianincome, y = dat$housingmedian, 
+                text = dat$geography, type = "scatter")
+plot <- add_lines(plot, x = dat$medianincome, y = predict(m1))
+plot <- layout(plot, showlegend = FALSE)
+plot
+```
