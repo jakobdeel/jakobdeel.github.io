@@ -1,0 +1,47 @@
+---
+title: "Deel Developing Data Products_Week 3 Assignment"
+author: "Jakob Deel"
+date: "December 16, 2018"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  fig.path = "figures/"
+  )
+
+setwd("C:/Users/jdeel/Documents/Training/JHU - Coursera/Developing Data Products")
+
+```
+
+## Plot Setup
+
+On the next slide is a plot of median locality income and housing costs for all localities in Virginia, using openly-available income information from the U.S. Census' 2013-2017 American Community Survey 5-year estimates obtained on December 16th, 2018. (https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ACS_17_5YR_S2503&prodType=table).
+
+```{r packages, include = FALSE}
+#loads needed packages
+library(dplyr)
+library(leaflet)
+library(plotly)
+library(devtools)
+```
+
+## Plot
+```{r plot, echo = FALSE}
+#reads in address data obtained from openaddresses.io
+dat <- read.csv("JD_ACS_17_5YR_S2503_with_ann.csv")
+
+#creates simple linear regression for trendline
+m1 <- lm(dat$housingmedian~dat$medianincome)
+
+#creates plot
+plot <- plot_ly(data = dat, x = dat$medianincome, y = dat$housingmedian, 
+                text = dat$geography, type = "scatter")
+plot <- add_lines(plot, x = dat$medianincome, y = predict(m1))
+plot <- layout(plot, 
+               xaxis = list(title = "Locality Median Income (in dollars)"),
+               yaxis = list(title = "Locality Median Housing Cost(in dollars)"),
+               showlegend = FALSE)
+plot
+```
