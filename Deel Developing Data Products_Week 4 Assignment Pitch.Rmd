@@ -1,0 +1,52 @@
+---
+title: "Deel_Developing Data Products_Week 4 Assignment Pitch"
+author: "Jakob Deel"
+date: "December 22, 2018"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  fig.path = "figures/"
+  )
+
+setwd("C:/Users/jdeel/Documents/Training/JHU - Coursera/Developing Data Products/Deel Developing Data Products_Week 4 Assignment")
+```
+
+## Background
+
+In many places, higher local incomes can be partially offset by higher cost of living, especially housing costs. This can be frustrating for people who move geographies in search of a better financial situation. The dream scenario is to find a location where incomes are higher than usual but higher cost of living does not erase that advantage.
+
+## Study Setup
+
+Locality income and housing costs data is available from the U.S. Census.
+
+My preliminary study uses income and housing cost data for all localities in Virginia, using openly-available  information from the U.S. Census' 2013-2017 American Community Survey 5-year estimates obtained on December 16th, 2018. (https://factfinder.census.gov/faces/tableservices/jsf/pages/productview.xhtml?pid=ACS_17_5YR_S2503&prodType=table).
+
+## Simple Linear Regression
+
+The code below creates a very simple model to predict a locality's median housing cost (in percent relative to statewide mean) using only the locality's median income (again in percent relative to statewide mean). It also calculates a simple example showing that we would expect a locality at the exact statewide income mean to have a median housing cost at around 107% of the statewide mean.
+
+```{r data, include=FALSE}
+#reads in data obtained from census.gov
+setwd("C:/Users/jdeel/Documents/Training/JHU - Coursera/Developing Data Products/Deel Developing Data Products_Week 4 Assignment")
+dat <- read.csv("JD_ACS_17_5YR_S2503_with_ann.csv")
+
+#creates variables for locality median income and housing costs compared to mean
+dat$medianincomevsmean <- (dat$medianincome/mean(dat$medianincome))*100
+dat$housingmedianvsmean <- (dat$housingmedian/mean(dat$housingmedian))*100
+```
+
+```{r model}
+#runs simple prediction algorithm on housing vs. mean as function of median income vs. mean
+m1 <- lm(dat$housingmedianvsmean~dat$medianincomevsmean)
+
+#calculates example for locality at statewide mean
+m1$coefficients[2]*100
+
+```
+
+## Finding advantageous localities
+
+Use the R Shiny app at https://jakobdeel.shinyapps.io/Deel_DDP_Wk4_Project to explore data on the relationship between local income and housing costs and to identify localities below the trendline where extra income will not be absorbed by higher-than-average housing costs
